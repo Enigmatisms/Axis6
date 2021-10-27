@@ -4,8 +4,8 @@
             "name": "Linux",        
             "includePath": [
                 "/opt/ros/melodic/include/**",
-                "/usr/include/**",
-                "${workspaceFolder}/include/**"
+                "/usr/include/eigen3/**",
+                "${workspaceFolder}/src/axis6/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
