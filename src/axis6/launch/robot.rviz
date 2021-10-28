@@ -74,9 +74,9 @@ Visualization Manager:
       Value: true
     - Class: rviz/Axes
       Enabled: true
-      Length: 0.10000000149011612
+      Length: 5
       Name: Axes
-      Radius: 0.019999999552965164
+      Radius: 0.0010000000474974513
       Reference Frame: base0
       Value: true
     - Class: rviz/Axes
@@ -95,9 +95,9 @@ Visualization Manager:
       Value: true
     - Class: rviz/Axes
       Enabled: true
-      Length: 5
+      Length: 0.10000000149011612
       Name: Axes
-      Radius: 0.0010000000474974513
+      Radius: 0.019999999552965164
       Reference Frame: base3
       Value: true
     - Class: rviz/Axes
@@ -125,7 +125,7 @@ Visualization Manager:
   Global Options:
     Background Color: 0; 0; 0
     Default Light: true
-    Fixed Frame: base3
+    Fixed Frame: base0
     Frame Rate: 30
   Name: root
   Tools:
@@ -149,7 +149,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 1.5422286987304688
+      Distance: 3.2642016410827637
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -164,10 +164,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8947969675064087
+      Pitch: 0.7847970724105835
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 1.1321592330932617
+      Yaw: 0.11715364456176758
     Saved: ~
 Window Geometry:
   Displays:

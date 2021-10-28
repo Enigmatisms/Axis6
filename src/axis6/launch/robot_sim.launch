@@ -1,6 +1,6 @@
 <launch>
   <node name="rviz_slam" pkg="rviz" type="rviz" args="-d $(find axis6)/launch/robot.rviz" />
   <node pkg="axis6" type="robot_sim" name="robot_sim" output="screen">
-    <param name="delta" value="0.025" type="double"/>
+    <param name="delta" value="0.005" type="double"/>
   </node>
 </launch>

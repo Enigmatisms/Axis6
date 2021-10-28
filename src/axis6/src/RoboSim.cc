@@ -12,8 +12,8 @@ const std::vector<LinkInfo> init_links = {
     LinkInfo(0.5, 0, M_PI_2, M_PI / 4), 
     LinkInfo(0.1, 0.8, 0, M_PI / 4), 
     LinkInfo(0.1, 0, M_PI_2, M_PI), 
-    LinkInfo(0.8, 0, M_PI_2, M_PI / 6.0), 
-    LinkInfo(0, 0, M_PI_2, -M_PI / 4.0),
+    LinkInfo(0.8, 0, M_PI_2, -M_PI / 4.0), 
+    LinkInfo(0, 0, M_PI_2, -M_PI / 6.0),
     LinkInfo(0.4, 0, 0, 0)  
 };
 
@@ -39,7 +39,8 @@ Eigen::Vector3d RoboSim::getWristPosition(const Eigen::Vector3d& tar_pos, const 
 void RoboSim::solveBaseAngles(const Eigen::Vector3d& wrist) {
     const double r2 = std::pow(wrist.x(), 2) + std::pow(wrist.y(), 2), zd = wrist.z() - links.front().offset;
     const double d2d3 = links[1].offset + links[2].offset, perp_edge = std::sqrt(r2 - std::pow(d2d3, 2)), ofp = std::pow(d2d3, 2);
-    const double angle_1 = goodAngle(atan2(wrist.y(), wrist.x()) - atan2(d2d3, perp_edge)), angle_2 = goodAngle(M_PI + angle_1);
+    const double beta = atan2(wrist.y(), wrist.x()), alpha = atan2(d2d3, perp_edge);
+    const double angle_1 = goodAngle(beta + alpha), angle_2 = goodAngle(M_PI - alpha + beta);
     if (std::abs(links[0].angle - angle_1) < std::abs(links[0].angle - angle_2)) {
         links[0].angle = angle_1;
     } else {
@@ -68,25 +69,62 @@ void RoboSim::solveBaseAngles(const Eigen::Vector3d& wrist) {
 
 // 根据R03以及R，t计算球腕三个关节的角度
 // 球腕问题需要重新推导（个人感觉你坐标系变换理解的不行）
+// 球腕坐标系有两解
+// void RoboSim::solveWristAngles(const Eigen::Matrix3d& tar_rot, const Eigen::Vector3d& tar_pos) {
+//     Eigen::Matrix3d R03 = getTransform();
+//     Eigen::Matrix3d R36 = R03.inverse() * tar_rot;
+//     Eigen::Vector3d p3 = R03.inverse() * tar_pos;       // 在第三个坐标系下的坐标
+//     // 可以继续使用投影法求解各个角度
+//     links[3].angle = atan2(p3.y(), p3.x());
+//     links[4].angle = atan2(p3.z() - links[3].offset, std::sqrt(p3(0) * p3(0) + p3(1) * p3(1)));   
+//     Eigen::Matrix3d R34, R45, R56;
+//     Eigen::Vector3d tmp;
+//     forwardTransform(links[3], R34, tmp);
+//     forwardTransform(links[4], R45, tmp);
+//     R56 = R45.inverse() * R34.inverse() * R36;
+//     links[5].angle = asin((R56(1, 0) - R56(0, 1)) * 0.5);
+//     printf("Wrist angles:\n");
+//     for (int i = 3; i < 6; i++) {
+//         printf("%lf, ", links[i].angle * 180.0 / M_PI);
+//     }
+//     printf("\n");
+// }
+
 void RoboSim::solveWristAngles(const Eigen::Matrix3d& tar_rot, const Eigen::Vector3d& tar_pos) {
     Eigen::Matrix3d R03 = getTransform();
     Eigen::Matrix3d R36 = R03.inverse() * tar_rot;
-    Eigen::Vector3d p3 = R03.inverse() * tar_pos;       // 在第三个坐标系下的坐标
+    // 感觉这个地方应该不止是旋转 应该还有平移
+    Eigen::Matrix4d T03 = getFullTranfrom(0, 3);
+    Eigen::Vector4d tar_4d;
+    tar_4d << tar_pos, 1;
+    Eigen::Vector4d p3 = T03.inverse() * tar_4d;       // 在第三个坐标系下的坐标
     // 可以继续使用投影法求解各个角度
-    links[3].angle = atan2(p3.y(), p3.x());
-    links[4].angle = atan2(p3.z() - links[3].offset, std::sqrt(p3(0) * p3(0) + p3(1) * p3(1)));   
+    const double pitch_r1 = atan2(std::sqrt(p3(0) * p3(0) + p3(1) * p3(1)), links[3].offset - p3.z()),
+            pitch_r2 = -pitch_r1;
+    const double yaw_r1 = atan2(p3(1), p3(0)), yaw_r2 = goodAngle(yaw_r1 + M_PI);
+    if (abs(yaw_r1 - links[3].angle) < abs(yaw_r2 - links[3].angle)) {
+        links[3].angle = yaw_r1;
+        links[4].angle = pitch_r1;
+    } else {
+        links[3].angle = yaw_r2;
+        links[4].angle = pitch_r2;
+    }
     Eigen::Matrix3d R34, R45, R56;
     Eigen::Vector3d tmp;
     forwardTransform(links[3], R34, tmp);
     forwardTransform(links[4], R45, tmp);
     R56 = R45.inverse() * R34.inverse() * R36;
     links[5].angle = asin((R56(1, 0) - R56(0, 1)) * 0.5);
+    printf("x, y, z: %lf, %lf, %lf\n", p3.x(), p3.y(), p3.z());
+    printf("Yaw_r1, yaw_r2: %lf, %lf, pitch: %lf, %lf\n", yaw_r1 * 180.0 / M_PI,
+        yaw_r2 * 180.0 / M_PI, pitch_r1 * 180.0 / M_PI, pitch_r2 * 180.0 / M_PI);
     printf("Wrist angles:\n");
     for (int i = 3; i < 6; i++) {
         printf("%lf, ", links[i].angle * 180.0 / M_PI);
     }
     printf("\n");
 }
+
 
 Eigen::Matrix3d RoboSim::getTransform(int id_from, int id_to) const {
     Eigen::Matrix3d result = Eigen::Matrix3d::Identity();

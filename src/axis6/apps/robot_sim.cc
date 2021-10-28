@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
         printf("Full tmp is: %lf, %lf, %lf, while wrist is %lf, %lf, %lf\n", full_tmp(0, 3), full_tmp(1, 3), full_tmp(2, 3),
                 wrist_pos.x(), wrist_pos.y(), wrist_pos.z()
         );
-        getchar();
+        // getchar();
         sim.solveBaseAngles(wrist_pos);
         sim.solveWristAngles(init_rot, tar_pos);
         sim.visualize(bar_pub);
