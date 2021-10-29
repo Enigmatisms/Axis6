@@ -39,13 +39,20 @@ public:
     Eigen::Matrix4d getFullTranfrom(int id_from = 0, int id_to = 6) const;
 
     // 根据球腕中心位置求底部三个关节的角度
-    void solveBaseAngles(const Eigen::Vector3d& wrist);
+    bool solveBaseAngles(const Eigen::Vector3d& wrist);
 
     // 根据R03以及R，t计算球腕三个关节的角度
-    void solveWristAngles(const Eigen::Matrix3d& tar_rot, const Eigen::Vector3d& tar_pos);
+    bool solveWristAngles(const Eigen::Matrix3d& tar_rot, const Eigen::Vector3d& tar_pos);
 
     // 主要是RVIZ操作
     void visualize(ros::Publisher& bar_pub) const;
+
+    static Eigen::Matrix3d getRotMatrix(const Eigen::Vector3d eulers) {
+        Eigen::AngleAxisd roll(eulers.x(), Eigen::Vector3d::UnitX());
+        Eigen::AngleAxisd pitch(eulers.y(), Eigen::Vector3d::UnitY());
+        Eigen::AngleAxisd yaw(eulers.z(), Eigen::Vector3d::UnitZ());
+        return roll.toRotationMatrix() * pitch.toRotationMatrix() * yaw.toRotationMatrix();
+    }
 private:
     static void forwardTransform(const LinkInfo& link, Eigen::Matrix3d& R, Eigen::Vector3d& t) {
         const double cos_a = cos(link.angle), sin_a = sin(link.angle), cos_t = cos(link.twist), sin_t = sin(link.twist);
@@ -55,7 +62,6 @@ private:
         t << link.length * cos_a, link.length * sin_a, link.offset;
     }
     // 根据欧拉角计算旋转矩阵
-    static Eigen::Matrix3d getRotMatrix(const Eigen::Vector3d eulers);
 
     static double goodAngle(double angle) {
         if (angle > M_PI)
@@ -64,7 +70,6 @@ private:
             return angle + M_2PI;
         return angle;
     }
-
     // 由于运动模型解耦 底部三个角度与 顶部三个角度的存储分开 所有角度的角度范围都是-pi~pi
     std::vector<LinkInfo> links;
 };

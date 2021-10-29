@@ -3,9 +3,10 @@
 
 const std::unordered_map<int, int> mapping = {
     {458778, 0}, {458756, 1}, {458774, 2}, {458759, 3}, {458773, 4}, {458770, 5}, {458771, 6}, {458793, 7},
-}; // w a s d r o p [esc]
+    {458757, 8}, {458763, 9}, {458769, 10}, {458765, 11}, {458768, 12}, {458766, 13}, {458796, 14}, {458760, 15}
+}; // w a s d r o p [esc] // b h n j m k [space] e
 
-KeyCtrl::KeyCtrl(std::string dev_name, std::atomic_char& stat): status(stat) {
+KeyCtrl::KeyCtrl(std::string dev_name, std::atomic_short& stat): status(stat) {
     constexpr char name[13] = "K_MEDIUMRAW";
     const char *device = NULL;
     if ((getuid()) != 0) {          // admin clearance
@@ -37,13 +38,13 @@ void KeyCtrl::onKeyThread() {
             std::unordered_map<int, int>::const_iterator cit = mapping.find(value);
             if (cit == mapping.cend()) continue;
             int id = cit->second;
-            char digit = (0x01 << id);
+            short digit = (0x0001 << id);
             status |= digit;
         } else {
             std::unordered_map<int, int>::const_iterator cit = mapping.find(value);
             if (cit == mapping.cend()) continue;
             int id = cit->second;
-            char digit = ((0xfe) >> (8 - id) | (0xfe << id));
+            short digit = ((0xfffe) >> (16 - id) | (0xfffe << id));
             status &= digit;
         }
     }
