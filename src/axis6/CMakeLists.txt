@@ -50,7 +50,16 @@ target_link_libraries(robot_sim
   pthread
 )
 
-install(TARGETS robot_sim
+add_executable(gazebo_sim apps/gazebo_sim.cc
+  ${SRC}
+)
+
+target_link_libraries(gazebo_sim
+  ${catkin_LIBRARIES}
+  pthread
+)
+
+install(TARGETS robot_sim gazebo_sim
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

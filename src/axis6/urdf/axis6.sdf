@@ -1,64 +1,67 @@
-<?xml version="1.0"?>
 <robot>
 
   <!-- ros_control plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/rrbot</robotNamespace>
+      <robotNamespace>/axis6</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>
 
   <!-- Link1 -->
   <gazebo reference="link1">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/Black</material>
-    <gravity>0</gravity>
   </gazebo>
 
   <!-- Link2 -->
   <gazebo reference="link2">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/Orange</material>
-    <gravity>0</gravity>
   </gazebo>
-
-  <!-- <gazebo reference="test_box">
-    <kp>1000000</kp>
-    <kd>1</kd>
-    <mu1>0.0</mu1>
-    <mu2>0.0</mu2>
-    <material>Gazebo/Blue</material>
-  </gazebo> -->
 
   <!-- Link3 -->
   <gazebo reference="link3">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/White</material>
-    <gravity>0</gravity>
   </gazebo>
 
   <gazebo reference="link4">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/Black</material>
-    <gravity>0</gravity>
   </gazebo>
 
   <gazebo reference="link5">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/Orange</material>
-    <gravity>0</gravity>
   </gazebo>
 
   <gazebo reference="link6">
+    <gravity>0</gravity>
+    <self_collide>0</self_collide>
     <mu1>0.0</mu1>
     <mu2>0.0</mu2>
     <material>Gazebo/White</material>
-    <gravity>0</gravity>
+  </gazebo>
+
+  <gazebo reference="base">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <material>Gazebo/Grey</material>
   </gazebo>
 </robot>

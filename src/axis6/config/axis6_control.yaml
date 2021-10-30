@@ -1,0 +1,36 @@
+axis6:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+  
+  # Position Controllers ---------------------------------------
+  joint0_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint0
+    pid: {p: 15.0, i: 0.001, d: 1.2}
+
+  joint1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint1
+    pid: {p: 10.0, i: 0.001, d: 0.8}
+
+  joint2_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint2
+    pid: {p: 5.0, i: 0.001, d: 0.1}
+
+  joint3_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint3
+    pid: {p: 1.5, i: 0.001, d: 0.04}
+
+  joint4_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint4
+    pid: {p: 1.1, i: 0.001, d: 0.08}
+    
+  joint5_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint5
+    pid: {p: 0.25, i: 0.0001, d: 0.0002}

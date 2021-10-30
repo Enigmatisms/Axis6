@@ -1,4 +1,5 @@
 #include <thread>
+#include <std_msgs/Float64.h>
 #include "RoboSim.hpp"
 #include "keyCtrl.hpp"
 
@@ -16,28 +17,24 @@ void controlFlow(short stat) {
 }
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "robot_sim");
+    ros::init(argc, argv, "gazebo_sim");
     ros::NodeHandle nh;
     RoboSim sim(init_links);
     const Eigen::Matrix4d full_trans = sim.getFullTranfrom(0, 6);
-    const double delta_t = nh.param<double>("/robot_sim/delta_t", 0.05);
-    const double delta_a = nh.param<double>("/robot_sim/delta_a", 0.005);
-    ros::Publisher bar_pub = nh.advertise<visualization_msgs::Marker>("arms", 24);
-    ros::Rate rate(50.0);
+    const double delta_t = nh.param<double>("/gazebo_sim/delta_t", 0.05);
+    const double delta_a = nh.param<double>("/gazebo_sim/delta_a", 0.005);
+    ros::Publisher pubs[6];
+    for (int i = 0; i < 6; i++) {
+        std::string topic_name = "/axis6/joint" + std::to_string(i) + "_position_controller/command";
+        pubs[i] = nh.advertise<std_msgs::Float64>(topic_name, 4, false);
+    }
+    ros::Rate rate(60.0);
     KeyCtrl kc(dev_name, status);
     Eigen::Matrix3d tar_rot = full_trans.block<3, 3>(0, 0);
     Eigen::Vector3d tar_pos = full_trans.block<3, 1>(0, 3);
     states.fill(false);
     std::thread worker(&KeyCtrl::onKeyThread, &kc);
     worker.detach();
-    while (ros::ok()) {
-        short key = status;
-        controlFlow(key);
-        sim.visualize(bar_pub);
-        if (states[4] == true)
-            break;
-        rate.sleep();
-    }
     Eigen::Vector3d delta_pos(0.0, 0.0, 0.0);
     Eigen::Vector3d delta_rot(0.0, 0.0, 0.0);       // 旋转
     while (ros::ok()) {
@@ -101,13 +98,13 @@ int main(int argc, char** argv) {
         } 
         delta_pos.setZero();
         delta_rot.setZero();
-        sim.visualize(bar_pub);
         std::vector<double> angles(6, 0.0);
         sim.getAngles(angles);
         for (int i = 0; i < 6; i++) {
-            printf("%lf, ", angles[i]);
+            std_msgs::Float64 msg;
+            msg.data = angles[i];
+            pubs[i].publish(msg);
         }
-        printf("\n");
         rate.sleep();
     }
     return 0;

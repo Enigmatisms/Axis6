@@ -7,12 +7,12 @@ typedef visualization_msgs::Marker Bar;
 
 const Eigen::Vector4d RED(1.0, 0, 0, 0.8);
 const std::vector<LinkInfo> init_links = {
-    LinkInfo(0.5, 0, M_PI_2, 0), 
-    LinkInfo(0.1, 0.8, 0, 0), 
-    LinkInfo(0.1, 0, M_PI_2, 0), 
-    LinkInfo(0.8, 0, M_PI_2, 0), 
-    LinkInfo(0, 0, M_PI_2, 0),
-    LinkInfo(0.4, 0, 0, 0)  
+    LinkInfo(0.5, 0, M_PI_2,  0.134140), 
+    LinkInfo(0.1, 0.8, 0, 0.012189), 
+    LinkInfo(0.1, 0, M_PI_2, -0.036790), 
+    LinkInfo(0.8, 0, M_PI_2, 1.596749), 
+    LinkInfo(0, 0, M_PI_2, -0.222030),
+    LinkInfo(0.4, 0, 0, 1.459867)  
 };
 
 RoboSim::~RoboSim() {;}

@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="axis6" type="gazebo_sim" name="gazebo_sim" output="screen">
+    <param name="delta_t" value="0.005" type="double"/>
+    <param name="delta_a" value="0.008" type="double"/>
+  </node>
+</launch>

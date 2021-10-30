@@ -53,6 +53,12 @@ public:
         Eigen::AngleAxisd yaw(eulers.z(), Eigen::Vector3d::UnitZ());
         return roll.toRotationMatrix() * pitch.toRotationMatrix() * yaw.toRotationMatrix();
     }
+
+    void getAngles(std::vector<double>& vec) const {
+        for (int i = 0; i < 6; i++) {
+            vec[i] = links[i].angle;
+        } 
+    }
 private:
     static void forwardTransform(const LinkInfo& link, Eigen::Matrix3d& R, Eigen::Vector3d& t) {
         const double cos_a = cos(link.angle), sin_a = sin(link.angle), cos_t = cos(link.twist), sin_t = sin(link.twist);

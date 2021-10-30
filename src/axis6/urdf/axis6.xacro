@@ -4,25 +4,51 @@
 
   <!-- Constants for robot dimensions -->
   <xacro:property name="PI" value="3.1415926535897931"/>
-  <xacro:property name="mass" value="1" /> <!-- arbitrary value for mass -->
+  <xacro:property name="mass" value="0.01" /> <!-- arbitrary value for mass -->
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
-  <xacro:include filename="$(find axis6)/urdf/axis6.gazebo" />
+  <xacro:include filename="$(find axis6)/urdf/axis6.sdf" />
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find axis6)/urdf/materials.xacro" />
 
   <!-- Used for fixing robot to Gazebo 'base_link' -->
   <link name="world"/>
 
+  <link name="base">
+    <visual>
+      <origin xyz="0 0 0.75" rpy="0 0 0"/>
+      <geometry>
+	      <box size="0.4 0.4 1.5"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.75" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+	      ixx="1.0041666666666669" ixy="0.0" ixz="0.0"
+	      iyy="1.0041666666666669" iyz="0.0"
+	      izz="0.13333333333333336"/>
+    </inertial>
+  </link>
+
+  <joint name="basej" type="fixed">
+    <parent link="world"/>
+    <child link="base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
   <joint name="joint0" type="continuous">
     <parent link="world"/>
     <child link="link1"/>
-    <origin xyz="0 0 2" rpy="0 0 0"/>
+    <origin xyz="0 0 1.5" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="50" velocity="50"/>
   </joint>
 
   <link name="link1">
+    <gravity value="0"/>
     <collision>
       <origin xyz="0 0 0.275" rpy="0 0 0"/>
       <geometry>
@@ -34,15 +60,15 @@
       <geometry>
 	      <box size="0.1 0.1 0.55"/>
       </geometry>
-      <material name="black"/>
+      <material name="orange"/>
     </visual>
     <inertial>
       <origin xyz="0 0 0.275" rpy="0 0 0"/>
       <mass value="${mass}"/>
       <inertia
-	      ixx="0.02604166666666667" ixy="0.0" ixz="0.0"
-	      iyy="0.02604166666666667" iyz="0.0"
-	      izz="0.001666666666666667"/>
+	      ixx="0.0002604166666666667" ixy="0.0" ixz="0.0"
+	      iyy="0.0002604166666666667" iyz="0.0"
+	      izz="1.666666666666667e-05"/>
     </inertial>
   </link>
 
@@ -51,16 +77,11 @@
     <child link="link2"/>
     <origin xyz="0 0 0.5" rpy="${PI/2} 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="5" velocity="5"/>
+    <limit effort="40" velocity="40"/>
   </joint>
 
   <link name="link2">
-    <collision>
-      <origin xyz="0.4 0 0.1" rpy="0 0 0"/>
-      <geometry>
-	      <box size="0.01 0.01 0.01"/>
-      </geometry>
-    </collision>
     <visual>
       <origin xyz="0.4 0 0.1" rpy="0 0 0"/>
       <geometry>
@@ -72,9 +93,9 @@
       <origin xyz="0.4 0 0.1" rpy="0 0 0"/>
       <mass value="${mass}"/>
       <inertia
-	      ixx="0.001666666666666667" ixy="0.0" ixz="0.0"
-	      iyy="0.06833333333333333" iyz="0.0"
-	      izz="0.06833333333333333"/>
+	      ixx="1.666666666666667e-05" ixy="0.0" ixz="0.0"
+	      iyy="0.0006833333333333334" iyz="0.0"
+	      izz="0.0006833333333333334"/>
     </inertial>
   </link>
 
@@ -83,10 +104,11 @@
     <child link="link3"/>
     <origin xyz="0.8 0 0.1" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="30" velocity="30"/>
   </joint>
 
   <link name="link3">
+    <gravity value="0"/>
     <collision>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <geometry>
@@ -98,15 +120,15 @@
       <geometry>
 	      <box size="0.1 0.1 0.1"/>
       </geometry>
-      <material name="white"/>
+      <material name="black"/>
     </visual>
     <inertial>
       <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <mass value="${mass}"/>
       <inertia
-	      ixx="0.001666666666666667" ixy="0.0" ixz="0.0"
-	      iyy="0.001666666666666667" iyz="0.0"
-	      izz="0.001666666666666667"/>
+	      ixx="1.666666666666667e-05" ixy="0.0" ixz="0.0"
+	      iyy="1.666666666666667e-05" iyz="0.0"
+	      izz="1.666666666666667e-05"/>
     </inertial>
   </link>
   <joint name="joint3" type="continuous">
@@ -114,10 +136,11 @@
     <child link="link4"/>
     <origin xyz="0 0 0.1" rpy="${PI/2} 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="5" velocity="5"/>
   </joint>
 
   <link name="link4">
+    <gravity value="0"/>
     <collision>
       <origin xyz="0 0 0.4" rpy="0 0 0"/>
       <geometry>
@@ -135,9 +158,9 @@
       <origin xyz="0 0 0.4" rpy="0 0 0"/>
       <mass value="${mass}"/>
       <inertia
-	      ixx="0.06833333333333333" ixy="0.0" ixz="0.0"
-	      iyy="0.06833333333333333" iyz="0.0"
-	      izz="0.001666666666666667"/>
+	      ixx="0.0006833333333333334" ixy="0.0" ixz="0.0"
+	      iyy="0.0006833333333333334" iyz="0.0"
+	      izz="1.666666666666667e-05"/>
     </inertial>
   </link>
 
@@ -146,30 +169,31 @@
     <child link="link5"/>
     <origin xyz="0 0 0.8" rpy="${PI/2} 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="10" velocity="10"/>
   </joint>
 
   <link name="link5">
+    <gravity value="0"/>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-	      <cylinder length="0.1" radius="0.0002"/>
+	       <box size="0.01 0.01 0.01"/>
       </geometry>
     </collision>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-	      <cylinder length="0.1" radius="0.05"/>
+	       <box size="0.1 0.1 0.1"/>
       </geometry>
-      <material name="orange"/>
+      <material name="black"/>
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${mass}"/>
+      <mass value="${mass/10.0}"/>
       <inertia
-	      ixx="0.0014583333333333334" ixy="0.0" ixz="0.0"
-	      iyy="0.0014583333333333334" iyz="0.0"
-	      izz="0.0012500000000000002"/>
+        ixx="1.666666666666667e-06" ixy="0.0" ixz="0.0"
+	      iyy="1.666666666666667e-06" iyz="0.0"
+	      izz="1.666666666666667e-06"/>
     </inertial>
   </link>
 
@@ -178,10 +202,11 @@
     <child link="link6"/>
     <origin xyz="0 -0.2 0" rpy="${PI/2} 0 0"/>
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.01"/>
+    <limit effort="1" velocity="1"/>
   </joint>
 
   <link name="link6">
+    <gravity value="0"/>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -193,18 +218,29 @@
       <geometry>
 	      <box size="0.1 0.1 0.5"/>
       </geometry>
-      <material name="white"/>
+      <material name="black"/>
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${mass}"/>
+      <mass value="${mass/10.0}"/>
       <inertia
-	      ixx="0.021666666666666667" ixy="0.0" ixz="0.0"
-	      iyy="0.021666666666666667" iyz="0.0"
-	      izz="0.001666666666666667"/>
+	      ixx="2.1666666666666667e-05" ixy="0.0" ixz="0.0"
+	      iyy="2.1666666666666667e-05" iyz="0.0"
+	      izz="1.6666666666666669e-06"/>
     </inertial>
   </link>
   <!--Finished-->
+
+  <transmission name="tran0">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint0">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor0">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
   <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
@@ -217,12 +253,45 @@
     </actuator>
   </transmission>
 
-  <transmission name="tran2">
+    <transmission name="tran2">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="joint2">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+    <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+    <transmission name="tran4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint4">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor4">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+    <transmission name="tran5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint5">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
