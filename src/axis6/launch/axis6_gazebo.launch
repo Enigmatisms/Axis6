@@ -31,7 +31,6 @@
       -J joint4 -0.222030
       -J joint5 1.459867
     "/>
-
   <!-- ros_control axis6 launch file -->
   <include file="$(find axis6)/launch/control.launch" />
 </launch>
